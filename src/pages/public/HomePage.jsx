@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import './HomePage.css';
-import heroImg from '../../assets/hero-placeholder.png'; // replace with real image later
+import '../../styles/HomePage.css'
+import heroImg from '../../assets/hero.jpg'; // replace with real image later
 
 const HomePage = () => {
   return (
