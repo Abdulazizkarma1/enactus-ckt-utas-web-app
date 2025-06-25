@@ -1,28 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/RecruitmentPage.css';
 
 const RecruitmentPage = () => {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    serial: '',
-    pin: '',
-    studentId: '',
-    password: '',
-    lastName: '',
-    firstName: '',
-    dob: '',
-    department: '',
-    programme: '',
-    zone: '',
-    hostel: '',
-    phone: '',
-    whatsapp: '',
-    cv: null,
-    photo: null,
-    motivation: '',
-    teamInterest: '',
-    agreeTerms: false
+  const [formData, setFormData] = useState(() => {
+    const saved = localStorage.getItem('recruitmentForm');
+    return saved ? JSON.parse(saved) : {
+      serial: '', pin: '', studentId: '', password: '',
+      lastName: '', firstName: '', dob: '', department: '',
+      programme: '', zone: '', hostel: '', phone: '', whatsapp: '',
+      cv: null, photo: null, motivation: '', teamInterest: '', agreeTerms: false
+    };
   });
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    localStorage.setItem('recruitmentForm', JSON.stringify(formData));
+  }, [formData]);
 
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
@@ -30,12 +24,54 @@ const RecruitmentPage = () => {
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     const val = type === 'checkbox' ? checked : type === 'file' ? files[0] : value;
+
+    if (type === 'file' && name === 'photo') {
+      if (!files[0].type.startsWith('image/')) {
+        setErrors({ ...errors, photo: 'Photo must be an image file.' });
+        return;
+      } else if (files[0].size > 1024 * 1024) {
+        setErrors({ ...errors, photo: 'Photo must be under 1MB.' });
+        return;
+      } else {
+        const newErrors = { ...errors };
+        delete newErrors.photo;
+        setErrors(newErrors);
+      }
+    }
+
+    if (type === 'file' && name === 'cv') {
+      if (!files[0].name.endsWith('.pdf')) {
+        setErrors({ ...errors, cv: 'CV must be a PDF file.' });
+        return;
+      } else if (files[0].size > 2 * 1024 * 1024) {
+        setErrors({ ...errors, cv: 'CV must be under 2MB.' });
+        return;
+      } else {
+        const newErrors = { ...errors };
+        delete newErrors.cv;
+        setErrors(newErrors);
+      }
+    }
+
     setFormData({ ...formData, [name]: val });
+  };
+
+  const saveForm = () => {
+    localStorage.setItem('recruitmentForm', JSON.stringify(formData));
+    alert('Progress saved!');
   };
 
   return (
     <div className="recruitment-container">
       <h2>Enactus CKT-UTAS Recruitment</h2>
+            <div className="step-form">
+        <button onClick={saveForm}>💾 Save Progress</button>
+      </div>
+
+       {/* Example error display */}
+      {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
+      {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
+      
       {step === 1 && (
         <div className="step-form">
           <p>Please enter your voucher serial and pin to begin registration.</p>
