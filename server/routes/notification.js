@@ -2,7 +2,9 @@ import express from 'express';
 import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 import Recruitment from '../models/Recruitment.js';
-
+import Admin from '../models/Admin.js';
+import bcrypt from 'bcryptjs';
+import { isAdmin } from '../middleware/auth.js';
 const router = express.Router();
 
 const transporter = nodemailer.createTransport({
@@ -53,5 +55,28 @@ router.post('/submit-recruitment', async (req, res) => {
     res.status(500).json({ message: 'Failed to save data' });
   }
 });
+
+router.post('/admin-login', async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const admin = await Admin.findOne({ username });
+    if (!admin) return res.status(401).json({ message: 'Invalid credentials' });
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+
+    req.session.adminId = admin._id;
+    res.status(200).json({ message: 'Logged in' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.get('/admin-data', isAdmin, async (req, res) => {
+  const data = await Recruitment.find();
+  res.json(data);
+});
+
+
 
 export default router;

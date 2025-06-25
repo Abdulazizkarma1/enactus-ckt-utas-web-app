@@ -20,7 +20,7 @@ function App() {
         <Route path="/recruitment" element={<RecruitmentPage />} />
         <Route path="/donate" element={<DonatePage />} />
         <Route path="/admin" element={<AdminLoginPage />} />
-
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     </BrowserRouter>
   );
