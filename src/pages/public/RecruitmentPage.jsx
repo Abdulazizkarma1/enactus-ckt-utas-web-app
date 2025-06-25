@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import '../../styles/RecruitmentPage.css';
 
 const RecruitmentPage = () => {
@@ -61,6 +63,30 @@ const RecruitmentPage = () => {
     alert('Progress saved!');
   };
 
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.text('Enactus CKT-UTAS Recruitment Summary', 20, 20);
+    doc.autoTable({
+      startY: 30,
+      head: [['Field', 'Value']],
+      body: [
+        ['Full Name', `${formData.firstName} ${formData.lastName}`],
+        ['Student ID', formData.studentId],
+        ['Date of Birth', formData.dob],
+        ['Department', formData.department],
+        ['Programme', formData.programme],
+        ['Zone', formData.zone],
+        ['Hostel', formData.hostel],
+        ['Phone', formData.phone],
+        ['WhatsApp', formData.whatsapp],
+        ['Motivation', formData.motivation],
+        ['Preferred Team', formData.teamInterest]
+      ]
+    });
+    doc.save('enactus_recruitment_summary.pdf');
+  };
+
+
   return (
     <div className="recruitment-container">
       <h2>Enactus CKT-UTAS Recruitment</h2>
@@ -71,7 +97,14 @@ const RecruitmentPage = () => {
        {/* Example error display */}
       {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
       {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
-      
+
+            {/* Simulate final submit step */}
+      {step === 5 && (
+        <div className="step-form">
+          <button onClick={generatePDF}>Generate PDF Summary</button>
+        </div>
+      )}
+
       {step === 1 && (
         <div className="step-form">
           <p>Please enter your voucher serial and pin to begin registration.</p>
