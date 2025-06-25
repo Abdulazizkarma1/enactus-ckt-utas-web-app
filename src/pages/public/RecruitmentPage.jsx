@@ -86,24 +86,33 @@ const RecruitmentPage = () => {
     doc.save('enactus_recruitment_summary.pdf');
   };
 
-  const handleSubmit = async () => {
-    // Mock API endpoint (replace with actual backend email/sms notification trigger)
-    try {
-      const res = await fetch('http://localhost:5000/api/send-confirmation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: formData.phone + '@example.com',
-          phone: formData.phone,
-          name: formData.firstName + ' ' + formData.lastName
-        })
-      });
-      const data = await res.json();
-      alert('✅ Email and SMS confirmation sent!');
-    } catch (err) {
-      alert('❌ Failed to send confirmation.');
-    }
-  };
+const handleSubmit = async () => {
+  try {
+    const mongoRes = await fetch('http://localhost:5000/api/submit-recruitment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+
+    if (!mongoRes.ok) throw new Error('DB error');
+
+    const notifRes = await fetch('http://localhost:5000/api/send-confirmation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: formData.phone + '@example.com',
+        phone: formData.phone,
+        name: formData.firstName + ' ' + formData.lastName
+      })
+    });
+
+    alert('✅ Application submitted, confirmation sent!');
+  } catch (err) {
+    alert('❌ Submission failed');
+    console.error(err);
+  }
+};
+
 
   return (
     <div className="recruitment-container">

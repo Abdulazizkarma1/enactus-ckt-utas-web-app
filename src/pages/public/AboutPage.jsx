@@ -22,7 +22,10 @@ const AboutPage = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Enactus is an international non-profit organization dedicated to inspiring students to improve the world through entrepreneurial action. At CKT-UTAS, our Enactus team embraces this mission by empowering students with the knowledge, tools, and opportunities to develop community-impact projects.
+            Enactus is an international non-profit organization dedicated to 
+            inspiring students to improve the world through entrepreneurial action. 
+            At CKT-UTAS, our Enactus team embraces this mission by empowering students with the knowledge,
+             tools, and opportunities to develop community-impact projects.
           </motion.p>
         </div>
         <img src={teamBg} alt="Team Background" className="about-background-image" />
