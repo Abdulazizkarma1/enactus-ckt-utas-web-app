@@ -86,6 +86,24 @@ const RecruitmentPage = () => {
     doc.save('enactus_recruitment_summary.pdf');
   };
 
+  const handleSubmit = async () => {
+    // Mock API endpoint (replace with actual backend email/sms notification trigger)
+    try {
+      const res = await fetch('http://localhost:5000/api/send-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.phone + '@example.com',
+          phone: formData.phone,
+          name: formData.firstName + ' ' + formData.lastName
+        })
+      });
+      const data = await res.json();
+      alert('✅ Email and SMS confirmation sent!');
+    } catch (err) {
+      alert('❌ Failed to send confirmation.');
+    }
+  };
 
   return (
     <div className="recruitment-container">
@@ -102,6 +120,8 @@ const RecruitmentPage = () => {
       {step === 5 && (
         <div className="step-form">
           <button onClick={generatePDF}>Generate PDF Summary</button>
+          <button onClick={handleSubmit}>📧 Send Email + SMS</button>
+
         </div>
       )}
 
