@@ -77,6 +77,17 @@ router.get('/admin-data', isAdmin, async (req, res) => {
   res.json(data);
 });
 
+router.put('/change-status/:id', isAdmin, async (req, res) => {
+  const { status } = req.body;
+  try {
+    await Recruitment.findByIdAndUpdate(req.params.id, { status });
+    res.status(200).json({ message: 'Status updated' });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to update status' });
+  }
+});
+
+
 
 
 export default router;
