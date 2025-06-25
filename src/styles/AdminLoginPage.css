@@ -1,0 +1,33 @@
+.admin-login-container {
+  max-width: 400px;
+  margin: 100px auto;
+  padding: 2rem;
+  background: white;
+  box-shadow: 0 0 10px #ccc;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.admin-login-container input {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  margin: 1rem 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.admin-login-container button {
+  padding: 0.8rem 2rem;
+  background: #ffc107;
+  border: none;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.admin-login-container .error {
+  color: red;
+  margin-top: 1rem;
+}

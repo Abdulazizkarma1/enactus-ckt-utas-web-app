@@ -6,6 +6,7 @@ import ProjectsPage from './pages/public/ProjectsPage';
 import TeamPage from './pages/public/TeamPage';
 import RecruitmentPage from './pages/public/RecruitmentPage';
 import DonatePage from './pages/public/DonatePage';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         <Route path="/team" element={<TeamPage />} />
         <Route path="/recruitment" element={<RecruitmentPage />} />
         <Route path="/donate" element={<DonatePage />} />
+        <Route path="/admin" element={<AdminLoginPage />} />
+
       </Routes>
     </BrowserRouter>
   );
