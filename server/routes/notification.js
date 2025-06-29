@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import twilio from 'twilio';
 import Recruitment from '../models/Recruitment.js';
 import Admin from '../models/Admin.js';
+import Voucher from '../models/Voucher.js';
 import bcrypt from 'bcryptjs';
 import { isAdmin } from '../middleware/auth.js';
 const router = express.Router();
@@ -84,6 +85,79 @@ router.put('/change-status/:id', isAdmin, async (req, res) => {
     res.status(200).json({ message: 'Status updated' });
   } catch (err) {
     res.status(500).json({ message: 'Failed to update status' });
+  }
+});
+
+// Voucher routes
+
+// Generate new voucher
+router.post('/vouchers', isAdmin, async (req, res) => {
+  const { serialNumber, pin } = req.body;
+  try {
+    const existing = await Voucher.findOne({ serialNumber });
+    if (existing) {
+      return res.status(400).json({ message: 'Serial number already exists' });
+    }
+    const voucher = new Voucher({ serialNumber, pin });
+    await voucher.save();
+    res.status(201).json(voucher);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to create voucher' });
+  }
+});
+
+// Get all vouchers
+router.get('/vouchers', isAdmin, async (req, res) => {
+  try {
+    const vouchers = await Voucher.find();
+    res.json(vouchers);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch vouchers' });
+  }
+});
+
+// Delete voucher
+router.delete('/vouchers/:id', isAdmin, async (req, res) => {
+  try {
+    await Voucher.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Voucher deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete voucher' });
+  }
+});
+
+// Toggle voucher active/inactive
+router.put('/vouchers/:id/toggle', isAdmin, async (req, res) => {
+  try {
+    const voucher = await Voucher.findById(req.params.id);
+    if (!voucher) {
+      return res.status(404).json({ message: 'Voucher not found' });
+    }
+    voucher.status = voucher.status === 'active' ? 'expired' : 'active';
+    await voucher.save();
+    res.status(200).json(voucher);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to toggle voucher status' });
+  }
+});
+
+// Validate voucher (serialNumber + pin)
+router.post('/vouchers/validate', async (req, res) => {
+  const { serialNumber, pin } = req.body;
+  try {
+    const voucher = await Voucher.findOne({ serialNumber, pin });
+    if (!voucher) {
+      return res.status(400).json({ valid: false, message: 'Invalid voucher' });
+    }
+    if (voucher.status !== 'active') {
+      return res.status(400).json({ valid: false, message: 'Voucher is not active' });
+    }
+    if (voucher.used) {
+      return res.status(400).json({ valid: false, message: 'Voucher already used' });
+    }
+    res.json({ valid: true, message: 'Voucher is valid' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to validate voucher' });
   }
 });
 

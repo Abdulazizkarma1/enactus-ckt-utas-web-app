@@ -63,6 +63,31 @@ const RecruitmentPage = () => {
     alert('Progress saved!');
   };
 
+  // New function to validate voucher
+  const validateVoucher = async () => {
+    if (!formData.serial || !formData.pin) {
+      alert('Please enter both voucher serial and pin.');
+      return;
+    }
+    try {
+      const res = await fetch('http://localhost:5000/api/vouchers/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ serialNumber: formData.serial, pin: formData.pin }),
+      });
+      const data = await res.json();
+      if (res.ok && data.valid) {
+        alert('Voucher validated successfully!');
+        handleNext();
+      } else {
+        alert(data.message || 'Invalid voucher');
+      }
+    } catch (err) {
+      alert('Error validating voucher');
+      console.error(err);
+    }
+  };
+
   const generatePDF = () => {
     const doc = new jsPDF();
     doc.text('Enactus CKT-UTAS Recruitment Summary', 20, 20);
@@ -137,10 +162,10 @@ const handleSubmit = async () => {
       {step === 1 && (
         <div className="step-form">
           <p>Please enter your voucher serial and pin to begin registration.</p>
-          <input name="serial" value={formData.serial} onChange={handleChange} placeholder="Voucher Serial" />
-          <input name="pin" value={formData.pin} onChange={handleChange} placeholder="Voucher Pin" />
-          <button onClick={handleNext}>Verify and Continue</button>
-        </div>
+      <input name="serial" value={formData.serial} onChange={handleChange} placeholder="Voucher Serial" />
+      <input name="pin" value={formData.pin} onChange={handleChange} placeholder="Voucher Pin" />
+      <button onClick={validateVoucher}>Verify and Continue</button>
+    </div>
       )}
 
       {step === 2 && (

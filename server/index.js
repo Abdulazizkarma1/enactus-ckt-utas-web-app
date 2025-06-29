@@ -4,20 +4,24 @@ import MongoStore from 'connect-mongo';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import notificationRoutes from './routes/notification.js';
 
 dotenv.config();
+
+const app = express(); // <-- Move this line up
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
-  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 1 day
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }), // <-- use MONGO_URI
+  cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
-const app = express();
 app.use(cors());
 app.use(express.json());
+
+app.use('/api', notificationRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,

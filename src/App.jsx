@@ -7,6 +7,7 @@ import TeamPage from './pages/public/TeamPage';
 import RecruitmentPage from './pages/public/RecruitmentPage';
 import DonatePage from './pages/public/DonatePage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 function App() {
   return (
