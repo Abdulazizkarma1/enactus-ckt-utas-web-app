@@ -7,31 +7,32 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import notificationRoutes from './routes/notification.js';
 
-dotenv.config();
+dotenv.config({ path: './server/.env' });
 
 const app = express(); // <-- Move this line up
 
-const SESSION_SECRET = process.env.SESSION_SECRET;
-const MONGO_URI = process.env.MONGO_URI;
-const PORT = process.env.PORT || 5000;
-
 app.use(session({
-  secret: SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'defaultSecret',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: MONGO_URI }), // <-- use MONGO_URI
-  cookie: { maxAge: 1000 * 60 * 60 * 24 }
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI, // this must be correct now
+    ttl: 14 * 24 * 60 * 60
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24
+  }
 }));
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000', 'http://localhost:5173'],
   credentials: true
 }));
 app.use(express.json());
 
 app.use('/api', notificationRoutes);
 
-mongoose.connect(MONGO_URI, {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log('MongoDB Connected'))
@@ -41,4 +42,5 @@ app.get('/', (req, res) => {
   res.send('ENACTUS API Running');
 });
 
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
