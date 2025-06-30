@@ -1,0 +1,41 @@
+.donate-page {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+  color: #333;
+  text-align: center;
+}
+
+.donate-page h1 {
+  color: #008000; /* Enactus green */
+  margin-bottom: 1rem;
+}
+
+.donate-page p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.donation-options {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.donation-options button {
+  background-color: #008000;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.donation-options button:hover,
+.donation-options button:focus {
+  background-color: #005000;
+  outline: none;
+}

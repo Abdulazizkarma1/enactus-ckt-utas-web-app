@@ -1,60 +1,108 @@
 .navbar {
-  background-color: #002366;
-  padding: 1rem 2rem;
+  background-color: #008000; /* Enactus green primary color */
+  color: white;
+  padding: 0.5rem 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.logo {
-  font-size: 1.5rem;
+.navbar-logo {
   font-weight: bold;
-  color: #f4c300;
+  font-size: 1.5rem;
   text-decoration: none;
+  color: white;
 }
 
-.nav-links {
+.navbar-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none;
+}
+
+.hamburger,
+.hamburger::before,
+.hamburger::after {
+  width: 25px;
+  height: 3px;
+  background-color: white;
+  display: block;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+  border-radius: 2px;
+}
+
+.hamburger::before,
+.hamburger::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.hamburger::before {
+  top: -8px;
+}
+
+.hamburger::after {
+  top: 8px;
+}
+
+.navbar-menu {
+  list-style: none;
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
 }
 
-.nav-links a {
+.navbar-menu.open {
+  display: block;
+}
+
+.nav-link {
   color: white;
   text-decoration: none;
   font-weight: 500;
+  padding: 0.5rem 0;
+  transition: color 0.3s ease;
 }
 
-.nav-links a.active {
-  color: #f4c300;
+.nav-link:hover,
+.nav-link.active {
+  color: #ff0000; /* Accent color for hover and active */
 }
 
-.menu-icon {
-  display: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: white;
-}
+/* Responsive */
 
-@media screen and (max-width: 768px) {
-  .nav-links {
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background: #002366;
-    width: 60%;
-    height: auto;
-    padding: 1rem;
-    display: none;
+@media (max-width: 768px) {
+  .navbar-toggle {
+    display: block;
   }
-  .nav-links.open {
+  .navbar-menu {
+    display: none;
+    flex-direction: column;
+    background-color: #008000;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 200px;
+    padding: 1rem;
+    border-radius: 0 0 0 8px;
+  }
+  .navbar-menu.open {
     display: flex;
   }
-  .menu-icon {
-    display: block;
+  .nav-link {
+    padding: 0.5rem 1rem;
   }
 }

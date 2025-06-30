@@ -1,76 +1,26 @@
-.about-container {
-  padding: 0;
-  text-align: center;
-  max-width: 100%;
-  margin: 0 auto;
-}
-
-.about-bg {
-  position: relative;
-  height: 400px;
-  overflow: hidden;
-}
-
-.about-background-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.45;
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 1;
-}
-
-.about-overlay {
-  position: relative;
-  z-index: 2;
-  padding: 4rem 2rem;
-}
-
-.about-overlay h2 {
-  font-size: 2.5rem;
-  color: #002366;
-}
-
-.about-text {
-  font-size: 1.2rem;
+.about-page {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
   color: #333;
-  margin: 1.5rem 0 3rem;
 }
 
-.about-cards {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-}
-
-.about-card {
-  background: #f9f9f9;
-  padding: 2rem;
-  border-left: 6px solid #f4c300;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.about-card h3 {
-  color: #002366;
+.about-page h1 {
+  color: #008000; /* Enactus green */
   margin-bottom: 1rem;
+  text-align: center;
 }
 
-@media (min-width: 768px) {
-  .about-cards {
-    flex-direction: row;
-    justify-content: space-between;
-  }
-  .about-card {
-    flex: 1;
-  }
+.about-page p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
 }
 
-@media (min-width: 1024px) {
-  .about-bg {
-    height: 550px;
-  }
+.about-page img {
+  display: block;
+  margin: 2rem auto;
+  max-width: 200px;
+  height: auto;
 }

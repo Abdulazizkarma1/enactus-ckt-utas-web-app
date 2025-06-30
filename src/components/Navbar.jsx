@@ -1,33 +1,71 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { FaBars, FaTimes } from 'react-icons/fa';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = () => setMenuOpen(!menuOpen);
-
-  const closeMenu = () => setMenuOpen(false);
+  const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <header className="navbar">
-      <Link to="/" className="logo">ENACTUS</Link> 
-
-      <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
-        <NavLink to="/" onClick={closeMenu}>Home</NavLink>
-        <NavLink to="/projects" onClick={closeMenu}>Projects</NavLink>
-        <NavLink to="/about" onClick={closeMenu}>About</NavLink>
-        <NavLink to="/team" onClick={closeMenu}>Team</NavLink>
-        <NavLink to="/recruitment" onClick={closeMenu}>Join</NavLink>
-        <NavLink to="/donate" onClick={closeMenu}>Donate</NavLink>
-      </nav>
- 
-      <div className="menu-icon" onClick={toggleMenu}>
-        {menuOpen ? <FaTimes /> : <FaBars />}
+    <nav className="navbar" aria-label="Primary Navigation">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo" aria-label="Enactus CKT-UTAS Home">
+          Enactus CKT-UTAS
+        </Link>
+        <button
+          className="navbar-toggle"
+          aria-controls="primary-navigation"
+          aria-expanded={isOpen}
+          onClick={toggleMenu}
+          aria-label="Toggle menu"
+        >
+          <span className="hamburger"></span>
+        </button>
+        <ul
+          id="primary-navigation"
+          className={`navbar-menu ${isOpen ? 'open' : ''}`}
+          role="menu"
+        >
+          <li role="none">
+            <NavLink to="/" className="nav-link" role="menuitem" onClick={() => setIsOpen(false)}>
+              Home
+            </NavLink>
+          </li>
+          <li role="none">
+            <NavLink to="/about" className="nav-link" role="menuitem" onClick={() => setIsOpen(false)}>
+              About
+            </NavLink>
+          </li>
+          <li role="none">
+            <NavLink to="/projects" className="nav-link" role="menuitem" onClick={() => setIsOpen(false)}>
+              Projects
+            </NavLink>
+          </li>
+          <li role="none">
+            <NavLink to="/team" className="nav-link" role="menuitem" onClick={() => setIsOpen(false)}>
+              Team
+            </NavLink>
+          </li>
+          <li role="none">
+            <NavLink to="/recruitment" className="nav-link" role="menuitem" onClick={() => setIsOpen(false)}>
+              Recruitment
+            </NavLink>
+          </li>
+          <li role="none">
+            <NavLink to="/donate" className="nav-link" role="menuitem" onClick={() => setIsOpen(false)}>
+              Donate
+            </NavLink>
+          </li>
+          <li role="none">
+            <NavLink to="/admin" className="nav-link" role="menuitem" onClick={() => setIsOpen(false)}>
+              Admin
+            </NavLink>
+          </li>
+        </ul>
       </div>
-    </header>
+    </nav>
   );
 };
 
-export default Navbar; 
+export default Navbar;

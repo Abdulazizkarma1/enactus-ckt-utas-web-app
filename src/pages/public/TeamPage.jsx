@@ -1,72 +1,47 @@
 import React, { useState } from 'react';
 import '../../styles/TeamPage.css';
-import johnImg from '../../assets/executives/john.jpg';
-import kwameImg from '../../assets/executives/kwame.jpg';
 
-const dummyExecutives = {
-  '2024': [
-    {
-      name: 'Kwame Mensah',
-      position: 'President',
-      image: johnImg,
-      facebook: '#',
-      linkedin: '#',
-      twitter: '#',
-      github: '#'
-    },
-    {
-      name: 'Ama Serwaa',
-      position: 'Vice President',
-      image: kwameImg,
-      facebook: '#',
-      linkedin: '#',
-      twitter: '#',
-      github: '#'
-    }
+const teamsByYear = {
+  2024: [
+    { id: 1, name: 'John Doe', role: 'President', photo: '/assets/executives/john.jpg' },
+    { id: 2, name: 'Kwame Nkrumah', role: 'Vice President', photo: '/assets/executives/kwame.jpg' },
   ],
-  '2023': [
-    {
-      name: 'John Doe',
-      position: 'President',
-      image: johnImg,
-      facebook: '#',
-      linkedin: '#',
-      twitter: '#',
-      github: '#'
-    }
-  ]
+  2023: [
+    { id: 3, name: 'Jane Smith', role: 'President', photo: '/assets/executives/jane.jpg' },
+    { id: 4, name: 'Michael Johnson', role: 'Secretary', photo: '/assets/executives/michael.jpg' },
+  ],
 };
 
 const TeamPage = () => {
-  const [year, setYear] = useState('2024');
-  const executives = dummyExecutives[year] || [];
+  const [selectedYear, setSelectedYear] = useState(2024);
+
+  const years = Object.keys(teamsByYear).sort((a, b) => b - a);
 
   return (
-    <div className="team-container">
-      <h2>Meet Our Executives</h2>
-
-      <select className="year-selector" value={year} onChange={(e) => setYear(e.target.value)}>
-        {Object.keys(dummyExecutives).map((yr) => (
-          <option key={yr} value={yr}>{yr}</option>
-        ))}
-      </select>
-
-      <div className="executive-grid">
-        {executives.map((exec, index) => (
-          <div className="exec-card" key={index}>
-            <img src={exec.image} alt={exec.name} className="exec-photo" />
-            <h3>{exec.name}</h3>
-            <p>{exec.position}</p>
-            <div className="exec-links">
-              <a href={exec.facebook} target="_blank" rel="noreferrer">Facebook</a>
-              <a href={exec.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-              <a href={exec.twitter} target="_blank" rel="noreferrer">X</a>
-              <a href={exec.github} target="_blank" rel="noreferrer">GitHub</a>
-            </div>
+    <section className="team-page">
+      <h1>Executive Team</h1>
+      <div className="year-selector">
+        <label htmlFor="year-select">Select Academic Year: </label>
+        <select
+          id="year-select"
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+        >
+          {years.map(year => (
+            <option key={year} value={year}>{year}</option>
+          ))}
+        </select>
+      </div>
+      <div className="team-list">
+        {teamsByYear[selectedYear].map(member => (
+          <div key={member.id} className="team-member">
+            <img src={member.photo} alt={`${member.name} - ${member.role}`} />
+            <h3>{member.name}</h3>
+            <p>{member.role}</p>
           </div>
         ))}
       </div>
-    </div>
+    </section>
   );
 };
 

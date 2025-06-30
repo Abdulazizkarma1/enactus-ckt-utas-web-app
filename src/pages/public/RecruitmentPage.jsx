@@ -20,7 +20,57 @@ const RecruitmentPage = () => {
     localStorage.setItem('recruitmentForm', JSON.stringify(formData));
   }, [formData]);
 
-  const handleNext = () => setStep(step + 1);
+  const handleNext = () => {
+    // Validation before moving to next step
+    let currentErrors = {};
+
+    if (step === 2) {
+      // Validate studentId: exactly 11 digits, numeric only
+      if (!/^\d{11}$/.test(formData.studentId)) {
+        currentErrors.studentId = 'Student ID must be exactly 11 digits.';
+      }
+      // Validate password: non-empty
+      if (!formData.password) {
+        currentErrors.password = 'Password is required.';
+      }
+    }
+
+    if (step === 3) {
+      // Validate required personal details fields
+      const requiredFields = ['lastName', 'firstName', 'dob', 'department', 'programme', 'zone', 'hostel', 'phone', 'whatsapp'];
+      requiredFields.forEach(field => {
+        if (!formData[field]) {
+          currentErrors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`;
+        }
+      });
+    }
+
+    if (step === 4) {
+      // Validate motivation and teamInterest
+      if (!formData.motivation) {
+        currentErrors.motivation = 'Motivation is required.';
+      }
+      if (!formData.teamInterest) {
+        currentErrors.teamInterest = 'Please select a team.';
+      }
+    }
+
+    if (step === 5) {
+      // Validate agreeTerms checkbox
+      if (!formData.agreeTerms) {
+        currentErrors.agreeTerms = 'You must agree to the terms.';
+      }
+    }
+
+    if (Object.keys(currentErrors).length > 0) {
+      setErrors(currentErrors);
+      return; // Prevent moving to next step
+    } else {
+      setErrors({});
+      setStep(step + 1);
+    }
+  };
+
   const handleBack = () => setStep(step - 1);
 
   const handleChange = (e) => {
@@ -121,7 +171,7 @@ const handleSubmit = async () => {
 
     if (!mongoRes.ok) throw new Error('DB error');
 
-    const notifRes = await fetch('http://localhost:5000/api/send-confirmation', {
+    await fetch('http://localhost:5000/api/send-confirmation', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -171,10 +221,12 @@ const handleSubmit = async () => {
       {step === 2 && (
         <div className="step-form">
           <p>Set your Student ID and Password</p>
-          <input name="studentId" value={formData.studentId} onChange={handleChange} placeholder="Student ID" />
-          <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="New Password" />
-          <button onClick={handleBack}>Back</button>
-          <button onClick={handleNext}>Continue</button>
+      <input name="studentId" value={formData.studentId} onChange={handleChange} placeholder="Student ID" />
+      {errors.studentId && <p style={{ color: 'red' }}>{errors.studentId}</p>}
+      <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="New Password" />
+      {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
+      <button onClick={handleBack}>Back</button>
+      <button onClick={handleNext}>Continue</button>
         </div>
       )}
 
@@ -182,16 +234,27 @@ const handleSubmit = async () => {
         <div className="step-form">
           <p>Personal Details</p>
           <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" />
+          {errors.lastName && <p style={{ color: 'red' }}>{errors.lastName}</p>}
           <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" />
+          {errors.firstName && <p style={{ color: 'red' }}>{errors.firstName}</p>}
           <input name="dob" type="date" value={formData.dob} onChange={handleChange} />
+          {errors.dob && <p style={{ color: 'red' }}>{errors.dob}</p>}
           <input name="department" value={formData.department} onChange={handleChange} placeholder="Department" />
+          {errors.department && <p style={{ color: 'red' }}>{errors.department}</p>}
           <input name="programme" value={formData.programme} onChange={handleChange} placeholder="Programme" />
+          {errors.programme && <p style={{ color: 'red' }}>{errors.programme}</p>}
           <input name="zone" value={formData.zone} onChange={handleChange} placeholder="Zone" />
+          {errors.zone && <p style={{ color: 'red' }}>{errors.zone}</p>}
           <input name="hostel" value={formData.hostel} onChange={handleChange} placeholder="Hostel" />
+          {errors.hostel && <p style={{ color: 'red' }}>{errors.hostel}</p>}
           <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" />
+          {errors.phone && <p style={{ color: 'red' }}>{errors.phone}</p>}
           <input name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="WhatsApp" />
+          {errors.whatsapp && <p style={{ color: 'red' }}>{errors.whatsapp}</p>}
           <label>Upload CV <input name="cv" type="file" onChange={handleChange} /></label>
+          {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
           <label>Upload Passport Photo <input name="photo" type="file" onChange={handleChange} /></label>
+          {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
           <button onClick={handleBack}>Back</button>
           <button onClick={handleNext}>Continue</button>
         </div>
@@ -201,6 +264,7 @@ const handleSubmit = async () => {
         <div className="step-form">
           <p>Motivation and Team Selection</p>
           <textarea name="motivation" value={formData.motivation} onChange={handleChange} placeholder="Why do you want to join Enactus?" />
+          {errors.motivation && <p style={{ color: 'red' }}>{errors.motivation}</p>}
           <select name="teamInterest" value={formData.teamInterest} onChange={handleChange}>
             <option value="">Select Team</option>
             <option value="research">Research Team</option>
@@ -208,6 +272,7 @@ const handleSubmit = async () => {
             <option value="it">IT Team</option>
             <option value="script">Script Team</option>
           </select>
+          {errors.teamInterest && <p style={{ color: 'red' }}>{errors.teamInterest}</p>}
           <button onClick={handleBack}>Back</button>
           <button onClick={handleNext}>Continue</button>
         </div>
@@ -218,8 +283,9 @@ const handleSubmit = async () => {
           <p>Data Privacy</p>
           <p>This data will be used for interview and membership purposes. It may be shared with external bodies when necessary.</p>
           <label><input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} /> I agree to the terms and privacy policy</label>
+          {errors.agreeTerms && <p style={{ color: 'red' }}>{errors.agreeTerms}</p>}
           <button onClick={handleBack}>Back</button>
-          <button disabled={!formData.agreeTerms}>Submit</button>
+          <button disabled={!formData.agreeTerms} onClick={handleSubmit}>Submit</button>
         </div>
       )}
     </div>

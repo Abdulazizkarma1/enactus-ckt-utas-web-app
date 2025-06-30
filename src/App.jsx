@@ -9,6 +9,13 @@ import DonatePage from './pages/public/DonatePage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
+const NotFoundPage = () => (
+  <div style={{ padding: '2rem', textAlign: 'center' }}>
+    <h2>404 - Page Not Found</h2>
+    <p>The page you are looking for does not exist.</p>
+  </div>
+);
+
 function App() {
   return (
     <BrowserRouter>
@@ -22,6 +29,7 @@ function App() {
         <Route path="/donate" element={<DonatePage />} />
         <Route path="/admin" element={<AdminLoginPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
