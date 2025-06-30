@@ -1,3 +1,4 @@
+/* eslint-env node */
 import express from 'express';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
@@ -10,20 +11,27 @@ dotenv.config();
 
 const app = express(); // <-- Move this line up
 
+const SESSION_SECRET = process.env.SESSION_SECRET;
+const MONGO_URI = process.env.MONGO_URI;
+const PORT = process.env.PORT || 5000;
+
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }), // <-- use MONGO_URI
+  store: MongoStore.create({ mongoUrl: MONGO_URI }), // <-- use MONGO_URI
   cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api', notificationRoutes);
 
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 }).then(() => console.log('MongoDB Connected'))
@@ -33,5 +41,4 @@ app.get('/', (req, res) => {
   res.send('ENACTUS API Running');
 });
 
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
