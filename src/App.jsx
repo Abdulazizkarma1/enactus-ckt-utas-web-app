@@ -15,6 +15,7 @@ import RecruitmentInstructionsPage from './pages/public/RecruitmentInstructionsP
 import MemberPortalPage from './pages/public/MemberPortalPage';
 import StudentLoginPage from './pages/public/StudentLoginPage';
 import ApplicationSubmittedPage from './pages/public/ApplicationSubmittedPage';
+import DuesPaymentPage from './pages/public/DuesPaymentPage';
 
 const NotFoundPage = () => (
   <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -42,6 +43,7 @@ function App() {
         <Route path="/admin" element={<AdminLoginPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/member-portal" element={<MemberPortalPage />} />
+        <Route path="/dues-payment" element={<DuesPaymentPage />} />
         <Route path="/student-login" element={<StudentLoginPage />} />
         <Route path="/application-submitted" element={<ApplicationSubmittedPage />} />
         <Route path="*" element={<NotFoundPage />} />
