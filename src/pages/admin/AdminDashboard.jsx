@@ -7,10 +7,12 @@ import { useNavigate } from 'react-router-dom';
 const AdminDashboard = () => {
   const [recruits, setRecruits] = useState([]);
   const [vouchers, setVouchers] = useState([]);
+  const [executiveRecords, setExecutiveRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [voucherSerial, setVoucherSerial] = useState('');
   const [voucherPin, setVoucherPin] = useState('');
   const [voucherStatusFilter, setVoucherStatusFilter] = useState('all');
+  const [execYearFilter, setExecYearFilter] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +29,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     fetchVouchers();
+    fetchExecutiveRecords();
   }, []);
 
   const fetchVouchers = async () => {
@@ -43,6 +46,23 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchExecutiveRecords = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/executive-records', {
+        credentials: 'include'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setExecutiveRecords(data);
+        if (data.length > 0) {
+          setExecYearFilter(data[0].academicYear);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch executive records', err);
+    }
+  };
+
   const filteredRecruits = recruits.filter(
     r =>
       r.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,6 +73,11 @@ const AdminDashboard = () => {
   const filteredVouchers = vouchers.filter(v => {
     if (voucherStatusFilter === 'all') return true;
     return v.status === voucherStatusFilter;
+  });
+
+  const filteredExecutiveRecords = executiveRecords.filter(record => {
+    if (!execYearFilter) return true;
+    return record.academicYear === execYearFilter;
   });
 
   const changeStatus = async (id, newStatus) => {
@@ -181,6 +206,69 @@ const AdminDashboard = () => {
     }
   };
 
+  // Executive Records management functions
+
+  const addExecutiveRecord = async (record) => {
+    try {
+      const res = await fetch('http://localhost:5000/api/executive-records', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(record),
+      });
+      if (res.ok) {
+        fetchExecutiveRecords();
+        alert('Executive record added');
+      } else {
+        const data = await res.json();
+        alert(data.message || 'Failed to add executive record');
+      }
+    } catch (err) {
+      alert('Error adding executive record');
+      console.error(err);
+    }
+  };
+
+  const updateExecutiveRecord = async (id, record) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/executive-records/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(record),
+      });
+      if (res.ok) {
+        fetchExecutiveRecords();
+        alert('Executive record updated');
+      } else {
+        const data = await res.json();
+        alert(data.message || 'Failed to update executive record');
+      }
+    } catch (err) {
+      alert('Error updating executive record');
+      console.error(err);
+    }
+  };
+
+  const deleteExecutiveRecord = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this executive record?')) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/executive-records/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        fetchExecutiveRecords();
+        alert('Executive record deleted');
+      } else {
+        alert('Failed to delete executive record');
+      }
+    } catch (err) {
+      alert('Error deleting executive record');
+      console.error(err);
+    }
+  };
+
   return (
     <div className="admin-dashboard">
       <h2>📊 Admin Dashboard</h2>
@@ -275,6 +363,39 @@ const AdminDashboard = () => {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <h3>Executive Records</h3>
+      <div className="executive-records-controls">
+        <label htmlFor="execYearFilter">Filter by Academic Year: </label>
+        <select
+          id="execYearFilter"
+          value={execYearFilter}
+          onChange={(e) => setExecYearFilter(e.target.value)}
+        >
+          <option value="">All</option>
+          {executiveRecords.map(record => (
+            <option key={record._id} value={record.academicYear}>
+              {record.academicYear}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="executive-records-list">
+        {filteredExecutiveRecords.map(record => (
+          <div key={record._id} className="executive-record">
+            <h4>{record.academicYear}</h4>
+            <ul>
+              {record.members.map((member, idx) => (
+                <li key={idx}>
+                  <strong>{member.name}</strong> - {member.role}
+                </li>
+              ))}
+            </ul>
+            <button onClick={() => deleteExecutiveRecord(record._id)}>Delete</button>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import twilio from 'twilio';
 import Recruitment from '../models/Recruitment.js';
 import Admin from '../models/Admin.js';
 import Voucher from '../models/Voucher.js';
+import ExecutiveRecord from '../models/ExecutiveRecord.js';
 import bcrypt from 'bcryptjs';
 import { isAdmin } from '../middleware/auth.js';
 const router = express.Router();
@@ -161,7 +162,59 @@ router.post('/vouchers/validate', async (req, res) => {
   }
 });
 
+// Executive Records routes
 
+// Create executive record
+router.post('/executive-records', isAdmin, async (req, res) => {
+  try {
+    const { academicYear, members } = req.body;
+    const existing = await ExecutiveRecord.findOne({ academicYear });
+    if (existing) {
+      return res.status(400).json({ message: 'Executive record for this year already exists' });
+    }
+    const record = new ExecutiveRecord({ academicYear, members });
+    await record.save();
+    res.status(201).json(record);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to create executive record' });
+  }
+});
 
+// Get all executive records
+router.get('/executive-records', isAdmin, async (req, res) => {
+  try {
+    const records = await ExecutiveRecord.find();
+    res.json(records);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch executive records' });
+  }
+});
+
+// Update executive record
+router.put('/executive-records/:id', isAdmin, async (req, res) => {
+  try {
+    const { academicYear, members } = req.body;
+    const record = await ExecutiveRecord.findById(req.params.id);
+    if (!record) {
+      return res.status(404).json({ message: 'Executive record not found' });
+    }
+    record.academicYear = academicYear;
+    record.members = members;
+    await record.save();
+    res.status(200).json(record);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to update executive record' });
+  }
+});
+
+// Delete executive record
+router.delete('/executive-records/:id', isAdmin, async (req, res) => {
+  try {
+    await ExecutiveRecord.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: 'Executive record deleted' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete executive record' });
+  }
+});
 
 export default router;
