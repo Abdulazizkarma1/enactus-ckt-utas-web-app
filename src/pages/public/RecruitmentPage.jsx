@@ -7,8 +7,9 @@ const RecruitmentPage = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState(() => {
     const saved = localStorage.getItem('recruitmentForm');
+    const studentId = localStorage.getItem('studentId');
     return saved ? JSON.parse(saved) : {
-      serial: '', pin: '', studentId: '', password: '',
+      studentId: studentId || '',
       lastName: '', firstName: '', dob: '', department: '',
       programme: '', zone: '', hostel: '', phone: '', whatsapp: '',
       cv: null, photo: null, motivation: '', teamInterest: '', agreeTerms: false
@@ -21,22 +22,9 @@ const RecruitmentPage = () => {
   }, [formData]);
 
   const handleNext = () => {
-    // Validation before moving to next step
     let currentErrors = {};
 
-    if (step === 2) {
-      // Validate studentId: exactly 11 digits, numeric only
-      if (!/^\d{11}$/.test(formData.studentId)) {
-        currentErrors.studentId = 'Student ID must be exactly 11 digits.';
-      }
-      // Validate password: non-empty
-      if (!formData.password) {
-        currentErrors.password = 'Password is required.';
-      }
-    }
-
-    if (step === 3) {
-      // Validate required personal details fields
+    if (step === 1) {
       const requiredFields = ['lastName', 'firstName', 'dob', 'department', 'programme', 'zone', 'hostel', 'phone', 'whatsapp'];
       requiredFields.forEach(field => {
         if (!formData[field]) {
@@ -45,8 +33,7 @@ const RecruitmentPage = () => {
       });
     }
 
-    if (step === 4) {
-      // Validate motivation and teamInterest
+    if (step === 2) {
       if (!formData.motivation) {
         currentErrors.motivation = 'Motivation is required.';
       }
@@ -55,8 +42,7 @@ const RecruitmentPage = () => {
       }
     }
 
-    if (step === 5) {
-      // Validate agreeTerms checkbox
+    if (step === 3) {
       if (!formData.agreeTerms) {
         currentErrors.agreeTerms = 'You must agree to the terms.';
       }
@@ -64,7 +50,7 @@ const RecruitmentPage = () => {
 
     if (Object.keys(currentErrors).length > 0) {
       setErrors(currentErrors);
-      return; // Prevent moving to next step
+      return;
     } else {
       setErrors({});
       setStep(step + 1);
@@ -76,66 +62,12 @@ const RecruitmentPage = () => {
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     const val = type === 'checkbox' ? checked : type === 'file' ? files[0] : value;
-
-    if (type === 'file' && name === 'photo') {
-      if (!files[0].type.startsWith('image/')) {
-        setErrors({ ...errors, photo: 'Photo must be an image file.' });
-        return;
-      } else if (files[0].size > 1024 * 1024) {
-        setErrors({ ...errors, photo: 'Photo must be under 1MB.' });
-        return;
-      } else {
-        const newErrors = { ...errors };
-        delete newErrors.photo;
-        setErrors(newErrors);
-      }
-    }
-
-    if (type === 'file' && name === 'cv') {
-      if (!files[0].name.endsWith('.pdf')) {
-        setErrors({ ...errors, cv: 'CV must be a PDF file.' });
-        return;
-      } else if (files[0].size > 2 * 1024 * 1024) {
-        setErrors({ ...errors, cv: 'CV must be under 2MB.' });
-        return;
-      } else {
-        const newErrors = { ...errors };
-        delete newErrors.cv;
-        setErrors(newErrors);
-      }
-    }
-
     setFormData({ ...formData, [name]: val });
   };
 
   const saveForm = () => {
     localStorage.setItem('recruitmentForm', JSON.stringify(formData));
     alert('Progress saved!');
-  };
-
-  // New function to validate voucher
-  const validateVoucher = async () => {
-    if (!formData.serial || !formData.pin) {
-      alert('Please enter both voucher serial and pin.');
-      return;
-    }
-    try {
-      const res = await fetch('http://localhost:5000/api/vouchers/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ serialNumber: formData.serial, pin: formData.pin }),
-      });
-      const data = await res.json();
-      if (res.ok && data.valid) {
-        alert('Voucher validated successfully!');
-        handleNext();
-      } else {
-        alert(data.message || 'Invalid voucher');
-      }
-    } catch (err) {
-      alert('Error validating voucher');
-      console.error(err);
-    }
   };
 
   const generatePDF = () => {
@@ -161,33 +93,24 @@ const RecruitmentPage = () => {
     doc.save('enactus_recruitment_summary.pdf');
   };
 
-const handleSubmit = async () => {
-  try {
-    const mongoRes = await fetch('http://localhost:5000/api/submit-recruitment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
-    });
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/recruitment/submit-application', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-    if (!mongoRes.ok) throw new Error('DB error');
+      if (!res.ok) throw new Error('DB error');
 
-    await fetch('http://localhost:5000/api/send-confirmation', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: formData.phone + '@example.com',
-        phone: formData.phone,
-        name: formData.firstName + ' ' + formData.lastName
-      })
-    });
-
-    alert('✅ Application submitted, confirmation sent!');
-  } catch (err) {
-    alert('❌ Submission failed');
-    console.error(err);
-  }
-};
-
+      alert('✅ Application submitted successfully!');
+      localStorage.removeItem('recruitmentForm');
+      localStorage.removeItem('studentId');
+    } catch (err) {
+      alert('❌ Submission failed');
+      console.error(err);
+    }
+  };
 
   return (
     <>
@@ -197,42 +120,10 @@ const handleSubmit = async () => {
           <button onClick={saveForm}>💾 Save Progress</button>
         </div>
 
-        {/* Example error display */}
-        {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
-        {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
-
-        {/* Simulate final submit step */}
-        {step === 5 && (
-          <div className="step-form">
-            <button onClick={generatePDF}>Generate PDF Summary</button>
-            <button onClick={handleSubmit}>📧 Send Email + SMS</button>
-          </div>
-        )}
-
         {step === 1 && (
           <div className="step-form">
-            <p>Please enter your voucher serial and pin to begin registration.</p>
-            <input name="serial" value={formData.serial} onChange={handleChange} placeholder="Voucher Serial" />
-            <input name="pin" value={formData.pin} onChange={handleChange} placeholder="Voucher Pin" />
-            <button onClick={validateVoucher}>Verify and Continue</button>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="step-form">
-            <p>Set your Student ID and Password</p>
-            <input name="studentId" value={formData.studentId} onChange={handleChange} placeholder="Student ID" />
-            {errors.studentId && <p style={{ color: 'red' }}>{errors.studentId}</p>}
-            <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="New Password" />
-            {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-            <button onClick={handleBack}>Back</button>
-            <button onClick={handleNext}>Continue</button>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="step-form">
             <p>Personal Details</p>
+            <input name="studentId" value={formData.studentId} onChange={handleChange} placeholder="Student ID" readOnly />
             <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" />
             {errors.lastName && <p style={{ color: 'red' }}>{errors.lastName}</p>}
             <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" />
@@ -252,15 +143,12 @@ const handleSubmit = async () => {
             <input name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="WhatsApp" />
             {errors.whatsapp && <p style={{ color: 'red' }}>{errors.whatsapp}</p>}
             <label>Upload CV <input name="cv" type="file" onChange={handleChange} /></label>
-            {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
             <label>Upload Passport Photo <input name="photo" type="file" onChange={handleChange} /></label>
-            {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
-            <button onClick={handleBack}>Back</button>
             <button onClick={handleNext}>Continue</button>
           </div>
         )}
 
-        {step === 4 && (
+        {step === 2 && (
           <div className="step-form">
             <p>Motivation and Team Selection</p>
             <textarea name="motivation" value={formData.motivation} onChange={handleChange} placeholder="Why do you want to join Enactus?" />
@@ -278,14 +166,15 @@ const handleSubmit = async () => {
           </div>
         )}
 
-        {step === 5 && (
+        {step === 3 && (
           <div className="step-form">
             <p>Data Privacy</p>
             <p>This data will be used for interview and membership purposes. It may be shared with external bodies when necessary.</p>
             <label><input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} /> I agree to the terms and privacy policy</label>
             {errors.agreeTerms && <p style={{ color: 'red' }}>{errors.agreeTerms}</p>}
             <button onClick={handleBack}>Back</button>
-            <button disabled={!formData.agreeTerms} onClick={handleSubmit}>Submit</button>
+            <button onClick={generatePDF}>Generate PDF Summary</button>
+            <button disabled={!formData.agreeTerms} onClick={handleSubmit}>Submit Application</button>
           </div>
         )}
       </div>

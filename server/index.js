@@ -21,6 +21,7 @@ app.use(session({
     ttl: 14 * 24 * 60 * 60
   }),
   cookie: {
+    maxAge: 1000 * 60 * 60 * 24
   }
 }));
 
@@ -31,6 +32,8 @@ app.use(cors({
 app.use(express.json());
 
 app.use('/api', notificationRoutes);
+app.use('/api/recruitment', recruitmentRoutes);
+
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))

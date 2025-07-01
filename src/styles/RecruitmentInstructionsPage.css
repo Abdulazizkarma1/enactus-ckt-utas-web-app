@@ -1,0 +1,37 @@
+.recruitment-instructions-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+  text-align: center;
+  padding: 20px;
+}
+
+.recruitment-instructions-container h2 {
+  margin-bottom: 20px;
+}
+
+.recruitment-instructions-container ul {
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.recruitment-instructions-container li {
+  margin-bottom: 10px;
+}
+
+.start-button {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 4px;
+  background-color: #28a745;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.start-button:hover {
+  background-color: #218838;
+}
