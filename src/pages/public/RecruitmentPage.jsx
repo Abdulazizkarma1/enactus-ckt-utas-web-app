@@ -12,6 +12,7 @@ const RecruitmentPage = () => {
       studentId: studentId || '',
       lastName: '', firstName: '', dob: '', department: '',
       programme: '', zone: '', hostel: '', phone: '', whatsapp: '',
+      password: '',
       cv: null, photo: null, motivation: '', teamInterest: '', agreeTerms: false
     };
   });
@@ -143,6 +144,8 @@ const RecruitmentPage = () => {
             {errors.phone && <p style={{ color: 'red' }}>{errors.phone}</p>}
             <input name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="WhatsApp" />
             {errors.whatsapp && <p style={{ color: 'red' }}>{errors.whatsapp}</p>}
+            <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="Password" />
+            {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
             <label>Upload CV <input name="cv" type="file" onChange={handleChange} /></label>
             <label>Upload Passport Photo <input name="photo" type="file" onChange={handleChange} /></label>
             <button onClick={handleNext}>Continue</button>
