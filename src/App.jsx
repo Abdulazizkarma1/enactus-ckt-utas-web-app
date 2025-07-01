@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/public/HomePage';
 import AboutPage from './pages/public/AboutPage';
@@ -8,6 +8,10 @@ import RecruitmentPage from './pages/public/RecruitmentPage';
 import DonatePage from './pages/public/DonatePage';
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import VoucherEntryPage from './pages/public/VoucherEntryPage';
+import StudentSetupPage from './pages/public/StudentSetupPage';
+import SetupSuccessPage from './pages/public/SetupSuccessPage';
+import RecruitmentInstructionsPage from './pages/public/RecruitmentInstructionsPage';
 
 const NotFoundPage = () => (
   <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -25,7 +29,12 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/team" element={<TeamPage />} />
-        <Route path="/recruitment" element={<RecruitmentPage />} />
+        <Route path="/recruitment" element={<Navigate to="/voucher-entry" />} />
+        <Route path="/voucher-entry" element={<VoucherEntryPage />} />
+        <Route path="/student-setup" element={<StudentSetupPage />} />
+        <Route path="/setup-success" element={<SetupSuccessPage />} />
+        <Route path="/recruitment-instructions" element={<RecruitmentInstructionsPage />} />
+        <Route path="/recruitment-form" element={<RecruitmentPage />} />
         <Route path="/donate" element={<DonatePage />} />
         <Route path="/admin" element={<AdminLoginPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
