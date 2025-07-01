@@ -18,6 +18,8 @@ const RecruitmentSchema = new mongoose.Schema({
   motivation: String,
   teamInterest: String,
   agreeTerms: Boolean,
+  status: { type: String, default: 'Pending' },
+  photoUrl: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

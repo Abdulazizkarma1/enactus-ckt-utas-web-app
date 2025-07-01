@@ -81,7 +81,7 @@ const AdminDashboard = () => {
   });
 
   const changeStatus = async (id, newStatus) => {
-    const res = await fetch(`http://localhost:5000/api/change-status/${id}`, {
+    const res = await fetch(`http://localhost:5000/api/recruitment/change-status/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus }),

@@ -9,6 +9,7 @@ import notificationRoutes from './routes/notification.js';
 import recruitmentRoutes from './routes/recruitment.js';
 import adminRoutes from './routes/admin.js';
 import userRoutes from './routes/user.js';
+import paymentRoutes from './routes/payment.js';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.use('/api', notificationRoutes);
 app.use('/api/recruitment', recruitmentRoutes);
 app.use('/api', adminRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/payment', paymentRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))

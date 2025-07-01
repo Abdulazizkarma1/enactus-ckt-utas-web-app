@@ -4,6 +4,27 @@ import Voucher from '../models/Voucher.js';
 
 const router = express.Router();
 
+// @route   PUT api/recruitment/change-status/:id
+// @desc    Change recruitment status
+// @access  Private/Admin
+router.put('/change-status/:id', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    const recruit = await Recruitment.findById(id);
+    if (!recruit) {
+      return res.status(404).json({ msg: 'Recruit not found' });
+    }
+    recruit.status = status;
+    await recruit.save();
+    res.json({ msg: 'Status updated', status: recruit.status });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 // @route   POST api/recruitment/validate-voucher
 // @desc    Validate a recruitment voucher
 // @access  Public
@@ -68,16 +89,25 @@ router.post('/setup-credentials', async (req, res) => {
   }
 });
 
+import bcrypt from 'bcryptjs';
+
 // @route   PUT api/recruitment/submit-application
 // @desc    Submit full recruitment application
 // @access  Public
 router.put('/submit-application', async (req, res) => {
-  const { studentId, ...formData } = req.body;
+  const { studentId, password, ...formData } = req.body;
 
   try {
     let student = await Recruitment.findOne({ studentId });
     if (!student) {
       return res.status(404).json({ msg: 'Student not found' });
+    }
+
+    // If password provided, hash it
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      formData.password = hashedPassword;
     }
 
     // Update student record

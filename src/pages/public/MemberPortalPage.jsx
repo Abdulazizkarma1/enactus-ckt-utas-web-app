@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import '../../styles/MemberPortalPage.css';
 
 const MemberPortalPage = () => {
@@ -9,16 +9,28 @@ const MemberPortalPage = () => {
   const [paymentHistory, setPaymentHistory] = useState([]);
 
   useEffect(() => {
-    // Fetch application data from backend (placeholder)
-    // For now, load from localStorage or dummy data
-    const savedApp = localStorage.getItem('recruitmentForm');
-    if (savedApp) {
-      setApplicationData(JSON.parse(savedApp));
-    }
+    // Fetch user profile from backend
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/user/profile', {
+          credentials: 'include',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setApplicationData(data);
+        } else {
+          setApplicationData(null);
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile:', err);
+        setApplicationData(null);
+      }
+    };
+    fetchProfile();
+
     // Fetch payment history from backend (placeholder)
     setPaymentHistory([
       { id: 1, date: '2024-01-15', amount: 50, method: 'MTN Momo', status: 'Completed' },
-      { id: 2, date: '2024-03-10', amount: 50, method: 'Card', status: 'Pending' },
     ]);
   }, []);
 
@@ -26,7 +38,7 @@ const MemberPortalPage = () => {
     if (!applicationData) return;
     const doc = new jsPDF();
     doc.text('Enactus CKT-UTAS Application Summary', 20, 20);
-    doc.autoTable({
+    autoTable(doc, {
       startY: 30,
       head: [['Field', 'Value']],
       body: Object.entries(applicationData).map(([key, value]) => [key, String(value)])
@@ -39,11 +51,14 @@ const MemberPortalPage = () => {
       <h1>Member Portal</h1>
       {applicationData && (
         <div className="user-info">
-          {applicationData.photoUrl && (
+          {applicationData.photoUrl ? (
             <img src={applicationData.photoUrl} alt="User Photo" className="user-photo" />
+          ) : (
+            <div className="no-photo-placeholder">No Photo Available</div>
           )}
           <p><strong>Name:</strong> {applicationData.firstName} {applicationData.lastName}</p>
           <p><strong>Student ID:</strong> {applicationData.studentId}</p>
+          <p><strong>Admission Status:</strong> {applicationData.status || 'Pending'}</p>
         </div>
       )}
       <nav className="portal-nav" aria-label="Member portal navigation">
@@ -78,7 +93,16 @@ const MemberPortalPage = () => {
           {applicationData ? (
             <>
               <h2>Your Application Details</h2>
-              <pre>{JSON.stringify(applicationData, null, 2)}</pre>
+              <table className="application-details-table">
+                <tbody>
+                  {Object.entries(applicationData).map(([key, value]) => (
+                    <tr key={key}>
+                      <td><strong>{key}</strong></td>
+                      <td>{String(value)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
               <button onClick={generatePDF}>Download PDF</button>
             </>
           ) : (
@@ -90,11 +114,11 @@ const MemberPortalPage = () => {
       {activeTab === 'payments' && (
         <div className="tab-content">
           <h2>Pay Dues</h2>
-          <button onClick={() => alert('MTN Momo payment integration coming soon!')}>
+          <button onClick={handleMtnPayment}>
             Pay via MTN Momo
           </button>
-          <button onClick={() => alert('Card payment integration coming soon!')}>
-            Pay via Card
+          <button onClick={handleVodafonePayment}>
+            Pay via Vodafone
           </button>
           <h3>Payment History</h3>
           <ul>
