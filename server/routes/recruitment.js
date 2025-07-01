@@ -4,6 +4,27 @@ import Voucher from '../models/Voucher.js';
 
 const router = express.Router();
 
+// @route   POST api/recruitment/validate-voucher
+// @desc    Validate a recruitment voucher
+// @access  Public
+router.post('/validate-voucher', async (req, res) => {
+  const { serialNumber, pin } = req.body;
+
+  try {
+    const voucher = await Voucher.findOne({ serialNumber, pin });
+    if (!voucher) {
+      return res.status(400).json({ msg: 'Invalid voucher credentials' });
+    }
+    if (voucher.isUsed) {
+      return res.status(400).json({ msg: 'Voucher has already been used' });
+    }
+    res.json({ msg: 'Voucher is valid' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 // @route   POST api/recruitment/setup-credentials
 // @desc    Set up student credentials
 // @access  Public

@@ -31,6 +31,7 @@ const VoucherEntryPage = () => {
       }
 
       localStorage.setItem('voucherSerialNumber', serialNumber);
+      localStorage.setItem('voucherPin', pin);
       navigate('/student-setup');
     } catch (err) {
       setError(err.message);
