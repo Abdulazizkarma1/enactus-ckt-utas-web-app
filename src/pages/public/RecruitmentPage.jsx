@@ -103,9 +103,10 @@ const RecruitmentPage = () => {
 
       if (!res.ok) throw new Error('DB error');
 
-      alert('✅ Application submitted successfully!');
       localStorage.removeItem('recruitmentForm');
       localStorage.removeItem('studentId');
+      // Redirect to application submitted confirmation page
+      window.location.href = '/application-submitted';
     } catch (err) {
       alert('❌ Submission failed');
       console.error(err);
