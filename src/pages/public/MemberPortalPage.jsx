@@ -46,6 +46,44 @@ const MemberPortalPage = () => {
     doc.save('application_summary.pdf');
   };
 
+  const handleMtnPayment = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/payment/mtn', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(data.message);
+        // Optionally refresh payment history here
+      } else {
+        alert('MTN payment failed');
+      }
+    } catch (err) {
+      console.error('MTN payment error:', err);
+      alert('MTN payment error');
+    }
+  };
+
+  const handleVodafonePayment = async () => {
+    try {
+      const res = await fetch('http://localhost:5000/api/payment/vodafone', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const data = await res.json();
+        alert(data.message);
+        // Optionally refresh payment history here
+      } else {
+        alert('Vodafone payment failed');
+      }
+    } catch (err) {
+      console.error('Vodafone payment error:', err);
+      alert('Vodafone payment error');
+    }
+  };
+
   return (
     <section className="member-portal">
       <h1>Member Portal</h1>
