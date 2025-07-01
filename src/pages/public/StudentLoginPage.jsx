@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../styles/StudentLoginPage.css';
 
 const StudentLoginPage = () => {
   const [studentId, setStudentId] = useState('');
@@ -31,7 +32,7 @@ const StudentLoginPage = () => {
 
   return (
     <div className="login-page">
-      <h2>Student Login</h2>
+      <h2>Enactor Login Page</h2>
       <form onSubmit={handleSubmit}>
         <label>
           Student ID:
