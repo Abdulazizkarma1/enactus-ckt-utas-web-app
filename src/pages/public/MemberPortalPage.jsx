@@ -37,6 +37,15 @@ const MemberPortalPage = () => {
   return (
     <section className="member-portal">
       <h1>Member Portal</h1>
+      {applicationData && (
+        <div className="user-info">
+          {applicationData.photoUrl && (
+            <img src={applicationData.photoUrl} alt="User Photo" className="user-photo" />
+          )}
+          <p><strong>Name:</strong> {applicationData.firstName} {applicationData.lastName}</p>
+          <p><strong>Student ID:</strong> {applicationData.studentId}</p>
+        </div>
+      )}
       <nav className="portal-nav" aria-label="Member portal navigation">
         <button
           className={activeTab === 'application' ? 'active' : ''}
@@ -55,6 +64,12 @@ const MemberPortalPage = () => {
           onClick={() => setActiveTab('notifications')}
         >
           Notifications
+        </button>
+        <button
+          className={activeTab === 'recruitmentUpdate' ? 'active' : ''}
+          onClick={() => setActiveTab('recruitmentUpdate')}
+        >
+          Recruitment Update
         </button>
       </nav>
 
@@ -96,6 +111,17 @@ const MemberPortalPage = () => {
         <div className="tab-content">
           <h2>Notifications</h2>
           <p>Interview status updates and other notifications will appear here.</p>
+        </div>
+      )}
+
+      {activeTab === 'recruitmentUpdate' && (
+        <div className="tab-content">
+          <h2>Recruitment Update</h2>
+          {applicationData && applicationData.recruitmentStatus ? (
+            <p>{applicationData.recruitmentStatus}</p>
+          ) : (
+            <p>No recruitment update available.</p>
+          )}
         </div>
       )}
     </section>
