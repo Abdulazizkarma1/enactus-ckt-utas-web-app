@@ -65,9 +65,9 @@ const AdminDashboard = () => {
 
   const filteredRecruits = recruits.filter(
     r =>
-      r.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.studentId.toLowerCase().includes(searchTerm.toLowerCase())
+      (r.firstName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (r.lastName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (r.studentId?.toLowerCase() || '').includes(searchTerm.toLowerCase())
   );
 
   const filteredVouchers = vouchers.filter(v => {
