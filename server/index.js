@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import notificationRoutes from './routes/notification.js';
 import recruitmentRoutes from './routes/recruitment.js';
+import adminRoutes from './routes/admin.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use(express.json());
 
 app.use('/api', notificationRoutes);
 app.use('/api/recruitment', recruitmentRoutes);
+app.use('/api', adminRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)
