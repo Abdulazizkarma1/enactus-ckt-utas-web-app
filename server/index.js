@@ -6,8 +6,9 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import notificationRoutes from './routes/notification.js';
+import recruitmentRoutes from './routes/recruitment.js';
 
-dotenv.config({ path: './server/.env' });
+dotenv.config();
 
 const app = express(); // <-- Move this line up
 
@@ -20,7 +21,6 @@ app.use(session({
     ttl: 14 * 24 * 60 * 60
   }),
   cookie: {
-    maxAge: 1000 * 60 * 60 * 24
   }
 }));
 

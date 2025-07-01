@@ -190,105 +190,106 @@ const handleSubmit = async () => {
 
 
   return (
-    <div className="recruitment-container">
-      <h2>Enactus CKT-UTAS Recruitment</h2>
-            <div className="step-form">
-        <button onClick={saveForm}>💾 Save Progress</button>
+    <>
+      <div className="recruitment-container">
+        <h2>Enactus CKT-UTAS Recruitment</h2>
+        <div className="step-form">
+          <button onClick={saveForm}>💾 Save Progress</button>
+        </div>
+
+        {/* Example error display */}
+        {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
+        {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
+
+        {/* Simulate final submit step */}
+        {step === 5 && (
+          <div className="step-form">
+            <button onClick={generatePDF}>Generate PDF Summary</button>
+            <button onClick={handleSubmit}>📧 Send Email + SMS</button>
+          </div>
+        )}
+
+        {step === 1 && (
+          <div className="step-form">
+            <p>Please enter your voucher serial and pin to begin registration.</p>
+            <input name="serial" value={formData.serial} onChange={handleChange} placeholder="Voucher Serial" />
+            <input name="pin" value={formData.pin} onChange={handleChange} placeholder="Voucher Pin" />
+            <button onClick={validateVoucher}>Verify and Continue</button>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="step-form">
+            <p>Set your Student ID and Password</p>
+            <input name="studentId" value={formData.studentId} onChange={handleChange} placeholder="Student ID" />
+            {errors.studentId && <p style={{ color: 'red' }}>{errors.studentId}</p>}
+            <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="New Password" />
+            {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
+            <button onClick={handleBack}>Back</button>
+            <button onClick={handleNext}>Continue</button>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="step-form">
+            <p>Personal Details</p>
+            <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" />
+            {errors.lastName && <p style={{ color: 'red' }}>{errors.lastName}</p>}
+            <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" />
+            {errors.firstName && <p style={{ color: 'red' }}>{errors.firstName}</p>}
+            <input name="dob" type="date" value={formData.dob} onChange={handleChange} />
+            {errors.dob && <p style={{ color: 'red' }}>{errors.dob}</p>}
+            <input name="department" value={formData.department} onChange={handleChange} placeholder="Department" />
+            {errors.department && <p style={{ color: 'red' }}>{errors.department}</p>}
+            <input name="programme" value={formData.programme} onChange={handleChange} placeholder="Programme" />
+            {errors.programme && <p style={{ color: 'red' }}>{errors.programme}</p>}
+            <input name="zone" value={formData.zone} onChange={handleChange} placeholder="Zone" />
+            {errors.zone && <p style={{ color: 'red' }}>{errors.zone}</p>}
+            <input name="hostel" value={formData.hostel} onChange={handleChange} placeholder="Hostel" />
+            {errors.hostel && <p style={{ color: 'red' }}>{errors.hostel}</p>}
+            <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" />
+            {errors.phone && <p style={{ color: 'red' }}>{errors.phone}</p>}
+            <input name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="WhatsApp" />
+            {errors.whatsapp && <p style={{ color: 'red' }}>{errors.whatsapp}</p>}
+            <label>Upload CV <input name="cv" type="file" onChange={handleChange} /></label>
+            {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
+            <label>Upload Passport Photo <input name="photo" type="file" onChange={handleChange} /></label>
+            {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
+            <button onClick={handleBack}>Back</button>
+            <button onClick={handleNext}>Continue</button>
+          </div>
+        )}
+
+        {step === 4 && (
+          <div className="step-form">
+            <p>Motivation and Team Selection</p>
+            <textarea name="motivation" value={formData.motivation} onChange={handleChange} placeholder="Why do you want to join Enactus?" />
+            {errors.motivation && <p style={{ color: 'red' }}>{errors.motivation}</p>}
+            <select name="teamInterest" value={formData.teamInterest} onChange={handleChange}>
+              <option value="">Select Team</option>
+              <option value="research">Research Team</option>
+              <option value="presentation">Presentation Team</option>
+              <option value="it">IT Team</option>
+              <option value="script">Script Team</option>
+            </select>
+            {errors.teamInterest && <p style={{ color: 'red' }}>{errors.teamInterest}</p>}
+            <button onClick={handleBack}>Back</button>
+            <button onClick={handleNext}>Continue</button>
+          </div>
+        )}
+
+        {step === 5 && (
+          <div className="step-form">
+            <p>Data Privacy</p>
+            <p>This data will be used for interview and membership purposes. It may be shared with external bodies when necessary.</p>
+            <label><input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} /> I agree to the terms and privacy policy</label>
+            {errors.agreeTerms && <p style={{ color: 'red' }}>{errors.agreeTerms}</p>}
+            <button onClick={handleBack}>Back</button>
+            <button disabled={!formData.agreeTerms} onClick={handleSubmit}>Submit</button>
+          </div>
+        )}
       </div>
-
-       {/* Example error display */}
-      {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
-      {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
-
-            {/* Simulate final submit step */}
-      {step === 5 && (
-        <div className="step-form">
-          <button onClick={generatePDF}>Generate PDF Summary</button>
-          <button onClick={handleSubmit}>📧 Send Email + SMS</button>
-
-        </div>
-      )}
-
-      {step === 1 && (
-        <div className="step-form">
-          <p>Please enter your voucher serial and pin to begin registration.</p>
-      <input name="serial" value={formData.serial} onChange={handleChange} placeholder="Voucher Serial" />
-      <input name="pin" value={formData.pin} onChange={handleChange} placeholder="Voucher Pin" />
-      <button onClick={validateVoucher}>Verify and Continue</button>
-    </div>
-      )}
-
-      {step === 2 && (
-        <div className="step-form">
-          <p>Set your Student ID and Password</p>
-      <input name="studentId" value={formData.studentId} onChange={handleChange} placeholder="Student ID" />
-      {errors.studentId && <p style={{ color: 'red' }}>{errors.studentId}</p>}
-      <input name="password" type="password" value={formData.password} onChange={handleChange} placeholder="New Password" />
-      {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-      <button onClick={handleBack}>Back</button>
-      <button onClick={handleNext}>Continue</button>
-        </div>
-      )}
-
-      {step === 3 && (
-        <div className="step-form">
-          <p>Personal Details</p>
-          <input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Last Name" />
-          {errors.lastName && <p style={{ color: 'red' }}>{errors.lastName}</p>}
-          <input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="First Name" />
-          {errors.firstName && <p style={{ color: 'red' }}>{errors.firstName}</p>}
-          <input name="dob" type="date" value={formData.dob} onChange={handleChange} />
-          {errors.dob && <p style={{ color: 'red' }}>{errors.dob}</p>}
-          <input name="department" value={formData.department} onChange={handleChange} placeholder="Department" />
-          {errors.department && <p style={{ color: 'red' }}>{errors.department}</p>}
-          <input name="programme" value={formData.programme} onChange={handleChange} placeholder="Programme" />
-          {errors.programme && <p style={{ color: 'red' }}>{errors.programme}</p>}
-          <input name="zone" value={formData.zone} onChange={handleChange} placeholder="Zone" />
-          {errors.zone && <p style={{ color: 'red' }}>{errors.zone}</p>}
-          <input name="hostel" value={formData.hostel} onChange={handleChange} placeholder="Hostel" />
-          {errors.hostel && <p style={{ color: 'red' }}>{errors.hostel}</p>}
-          <input name="phone" value={formData.phone} onChange={handleChange} placeholder="Phone" />
-          {errors.phone && <p style={{ color: 'red' }}>{errors.phone}</p>}
-          <input name="whatsapp" value={formData.whatsapp} onChange={handleChange} placeholder="WhatsApp" />
-          {errors.whatsapp && <p style={{ color: 'red' }}>{errors.whatsapp}</p>}
-          <label>Upload CV <input name="cv" type="file" onChange={handleChange} /></label>
-          {errors.cv && <p style={{ color: 'red' }}>{errors.cv}</p>}
-          <label>Upload Passport Photo <input name="photo" type="file" onChange={handleChange} /></label>
-          {errors.photo && <p style={{ color: 'red' }}>{errors.photo}</p>}
-          <button onClick={handleBack}>Back</button>
-          <button onClick={handleNext}>Continue</button>
-        </div>
-      )}
-
-      {step === 4 && (
-        <div className="step-form">
-          <p>Motivation and Team Selection</p>
-          <textarea name="motivation" value={formData.motivation} onChange={handleChange} placeholder="Why do you want to join Enactus?" />
-          {errors.motivation && <p style={{ color: 'red' }}>{errors.motivation}</p>}
-          <select name="teamInterest" value={formData.teamInterest} onChange={handleChange}>
-            <option value="">Select Team</option>
-            <option value="research">Research Team</option>
-            <option value="presentation">Presentation Team</option>
-            <option value="it">IT Team</option>
-            <option value="script">Script Team</option>
-          </select>
-          {errors.teamInterest && <p style={{ color: 'red' }}>{errors.teamInterest}</p>}
-          <button onClick={handleBack}>Back</button>
-          <button onClick={handleNext}>Continue</button>
-        </div>
-      )}
-
-      {step === 5 && (
-        <div className="step-form">
-          <p>Data Privacy</p>
-          <p>This data will be used for interview and membership purposes. It may be shared with external bodies when necessary.</p>
-          <label><input type="checkbox" name="agreeTerms" checked={formData.agreeTerms} onChange={handleChange} /> I agree to the terms and privacy policy</label>
-          {errors.agreeTerms && <p style={{ color: 'red' }}>{errors.agreeTerms}</p>}
-          <button onClick={handleBack}>Back</button>
-          <button disabled={!formData.agreeTerms} onClick={handleSubmit}>Submit</button>
-        </div>
-      )}
-    </div>
+    </>
   );
 };
 
