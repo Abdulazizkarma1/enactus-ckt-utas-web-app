@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../styles/ApplicationSubmittedPage.css';
 
 const ApplicationSubmittedPage = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const ApplicationSubmittedPage = () => {
         The outcome of the interview will determine membership admission.
         Failure to appear before the panel for the interview is automatic disqualification.
       </p>
-      <button onClick={handleGoToPortal}>Go to Student Login</button>
+      <button onClick={handleGoToPortal}>Go to Enactor Login</button>
     </div>
   );
 };

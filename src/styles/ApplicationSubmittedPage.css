@@ -1,0 +1,36 @@
+.application-submitted {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fefefe;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.application-submitted h2 {
+  color: #27ae60;
+  margin-bottom: 1rem;
+}
+
+.application-submitted p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.application-submitted button {
+  padding: 0.75rem 1.5rem;
+  background-color: #2980b9;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.application-submitted button:hover {
+  background-color: #1c5980;
+}
