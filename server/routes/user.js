@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import Recruitment from '../models/Recruitment.js';
+
 const router = express.Router();
-const bcrypt = require('bcrypt');
-const Recruitment = require('../models/Recruitment');
 
 // User login
 router.post('/login', async (req, res) => {
@@ -46,4 +47,4 @@ router.get('/profile', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
